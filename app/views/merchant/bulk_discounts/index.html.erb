@@ -1,0 +1,8 @@
+<% @bulk_discounts.each do |discount| %>
+<%= link_to "#{discount.name}", "/bulk_discounts/#{discount.id}" %>
+<%= link_to "Delete #{discount.name}", "/merchants/#{@merchant.id}/bulk_discounts?discount_id=#{discount.id}", method: :delete, local: true %>
+<p>Quantity Threshold: <%= discount.quantity_threshold %></p>
+<p>Percent Discounted: <%= discount.percent_discounted %></p>
+<% end %>
+
+<%= link_to 'Create New Discount', "/merchants/#{@merchant.id}/bulk_discounts/new" %>

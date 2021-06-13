@@ -74,23 +74,22 @@ RSpec.describe Merchant, type: :feature do
       Transaction.create!(invoice_id: @invoice_9.id, result: 0, credit_card_number: '12345', credit_card_expiration_date: '12345')
       Transaction.create!(invoice_id: @invoice_10.id, result: 0, credit_card_number: '12345', credit_card_expiration_date: '12345')
       Transaction.create!(invoice_id: @invoice_11.id, result: 0, credit_card_number: '12345', credit_card_expiration_date: '12345')
+
+      visit "/merchants/#{@merchant_1.id}/dashboard"
     end
 
     it "should display name of merchant" do
-      visit "/merchants/#{@merchant_1.id}/dashboard"
       expect(page).to have_content("#{@merchant_1.name}")
       expect(page).to_not have_content("#{@merchant_2.name}")
     end
 
     it "should contain links to merchant items index and merchant invoices index" do
-      visit "/merchants/#{@merchant_1.id}/dashboard"
       expect(page).to have_button("Dashboard")
       expect(page).to have_button("My Items")
       expect(page).to have_button("My Invoices")
       click_button("My Items")
       expect(current_path).to eq("/merchants/#{@merchant_1.id}/items")
 
-      visit "/merchants/#{@merchant_1.id}/dashboard"
       expect(page).to have_button("My Invoices")
       click_button("My Invoices")
       expect(current_path).to eq("/merchants/#{@merchant_1.id}/invoices")
@@ -99,28 +98,14 @@ RSpec.describe Merchant, type: :feature do
     describe "should contain section for Items Ready to Ship" do
       describe "and I see names of items ordered but not yet shipped" do
         it "and invoice id next to each item is a link to merchant invoice show page" do
-          visit "/merchants/#{@merchant_1.id}/dashboard"
           expect(page).to have_content("Items Ready to Ship")
-          #how to use within
           expect(page).to have_content("#{@item_1.name}")
           expect(page).to_not have_content("#{@item_2.name}")
-          # click_link("#{@invoice_1.id}")
-          # expect(page).to have_current_path("/merchants/#{@merchant_1.merchant_id}/invoices/#{@invoice_1.id}")
         end
       end
     end
 
-    #     Merchant Dashboard Statistics - Favorite Customers
-    #
-    # As a merchant,
-    # When I visit my merchant dashboard
-    # Then I see the names of the top 5 customers
-    # who have conducted the largest number of successful transactions with my merchant
-    # And next to each customer name I see the number of successful transactions they have
-    # conducted with my merchant
-
     it "should list top 5 customers per merchant" do
-      visit "/merchants/#{@merchant_1.id}/dashboard"
       expect(page).to have_content("Top 5 Customer")
       expect(page).to have_content("Successful Transactions 3")
       expect(page).to have_content("Successful Transactions 2")
@@ -138,5 +123,14 @@ RSpec.describe Merchant, type: :feature do
       expect('100 pack Pens').to appear_before('50 pack Markers')
     end
 
+    it 'has a link to view all discounts' do
+      expect(page).to have_link('Bulk Discounts')
+    end
+
+    it 'displays the next three holidays' do
+      expect(page).to have_content('Independence Day 2021-07-05')
+      expect(page).to have_content('Labor Day 2021-09-06')
+      expect(page).to have_content('Columbus Day 2021-10-11')
+    end
   end
 end

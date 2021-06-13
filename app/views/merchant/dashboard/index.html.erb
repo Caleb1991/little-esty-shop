@@ -1,3 +1,8 @@
+<h1>Upcomig Holidays: </h1>
+<% @next_holidays.each do |holiday| %>
+  <p><%= holiday %></p>
+<% end %>
+
 <div class="">
   <h1 class="little_esty_shop">Little Esty Shop</h1>
 </div>
@@ -36,3 +41,5 @@
     <% end %>
   </div>
 </div>
+
+<%= link_to 'Bulk Discounts', "/merchants/#{@merchant.id}/bulk_discounts" %>
