@@ -29,4 +29,6 @@ Rails.application.routes.draw do
   patch '/merchants/:merchant_id/items/:item_id', to: 'merchant/items#update'
 
   get '/bulk_discounts/:id', to: 'merchant/bulk_discounts#show'
+  get '/bulk_discounts/:id/edit', to: 'merchant/bulk_discounts#edit'
+  patch '/bulk_discounts/:id', to: 'merchant/bulk_discounts#update'
 end
