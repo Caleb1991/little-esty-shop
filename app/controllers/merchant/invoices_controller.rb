@@ -1,8 +1,5 @@
 class Merchant::InvoicesController < ApplicationController
-  # def show
-  #   @merchant = Merchant.find(params[:id])
-  #   @invoice = @merchant.invoices.find(params[:id])
-  # end
+
   def show
     @merchant = Merchant.find(params[:merchant_id])
     @invoice = Invoice.find(params[:invoice_id])
@@ -20,13 +17,24 @@ class Merchant::InvoicesController < ApplicationController
       InvoiceItem.where('merchant_id = ? AND invoice_id = ?', params[:merchant_id], params[:invoice_id]).first.update(status: 'Shipped')
       redirect_to "/merchants/#{@merchant.id}/invoices/#{@invoice.id}"
     end
+
+    @discounted_revenue = 0
+
+    if @merchant.discounts_greater_than_zero?
+      @invoice_items.each do |item|
+        if item.quantity >= @merchant.minimum_discount_quantity
+          @discounted_revenue += ((item.quantity * item.unit_price) * (1 - @merchant.highest_discount_percentage(item)))
+        elsif
+          @discounted_revenue += (item.quantity * item.unit_price)
+        end
+      end
+    end
   end
 
   def index
     @merchant = Merchant.find(params[:merchant_id])
     @items = @merchant.items
     @item_ids = Merchant.find(params[:merchant_id]).items.pluck(:id)
-    # @invoices = Invoice.joins(:invoice_items).where("invoice_items.item_id = ?", @item_ids)
     @invoices = @merchant.invoices.uniq
   end
 
