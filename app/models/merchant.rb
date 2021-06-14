@@ -25,15 +25,6 @@ class Merchant < ApplicationRecord
       .limit(5)
   end
 
-  # def top_days
-  #   items.joins(:transactions)
-  #     .select('items.*', 'sum(invoice_items.quantity * invoice_items.unit_price) as revenue', 'transactions.result', 'invoice_items.updated_at')
-  #     .where("transactions.result = 0")
-  #     .group('items.id', 'transactions.result', 'invoice_items.updated_at')
-  #     .order('revenue DESC')
-  #     .limit(9)
-  # end
-
   def top_days
     items.joins(:transactions, :invoices)
       .select('items.*', 'sum(invoice_items.quantity * invoice_items.unit_price) as revenue', 'transactions.result', 'invoices.created_at')
@@ -70,14 +61,19 @@ class Merchant < ApplicationRecord
           .group('items.name', 'invoices.created_at', 'invoice_items.status', 'invoices.id')
           .order('invoices.created_at')
   end
+
+  def discounts_greater_than_zero?
+    bulk_discounts.count > 0
+    #
+  end
+
+  def minimum_discount_quantity
+    bulk_discounts.minimum(:quantity_threshold)
+    #
+  end
+
+  def highest_discount_percentage(item)
+    bulk_discounts.where('quantity_threshold <= ?', item.quantity).order(percent_discounted: :desc).first.percent_discounted
+    # 
+  end
 end
-#
-# Item.joins(:transactions).select('items.id', 'sum(invoice_items.quantity * invoice_items.unit_price) as revenue', 'transactions.result').where("transactions.result = 'success'").group('items.id').group('transactions.result').where(:merchant_id => 1).order('revenue DESC').limit(5)
-
-# Item.joins(:transactions).select('items.id', 'sum(invoice_items.quantity * invoice_items.unit_price) as revenue', 'transactions.result', 'invoices.created_at').where("transactions.result =
-#  'success'").group('items.id').group('transactions.result').group('invoices.created_at').where(:merchant_id => 2).order('revenue DESC').limit(5)
-
-# items.joins(:transactions).select('items.*', 'sum(invoice_items.quantity * invoice_items.unit_price) as revenue', 'transactions.result', 'invoice_items.updated_at').where("transactions.result = 'success'").group('items.id', 'transactions.result', 'invoice_items.updated_at').order('revenue DESC').limit(5)
-# test = Merchant.joins(:transactions).select('merchants.id', 'invoices.id', 'invoices.customer_id', 'transactions.result', 'count(invoices.custom
-# er_id) as count').where('transactions.result = 0').where('merchants.id = 1').group('transactions.result').group('merchants.id').group('invoices.id').order('count
-# ')

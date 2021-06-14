@@ -5,17 +5,25 @@ RSpec.describe 'Merchant Invoice Show Page' do
     @merchant_1 = Merchant.create!(name: 'Roald')
     @merchant_2 = Merchant.create!(name: 'Big Rick')
 
+    @bulk_1 = @merchant_1.bulk_discounts.create!(name: 'Discount 1', percent_discounted: 0.15, quantity_threshold: 10)
+    @bulk_2 = @merchant_1.bulk_discounts.create!(name: 'Discount 2', percent_discounted: 0.20, quantity_threshold: 15)
+    @bulk_3 = @merchant_1.bulk_discounts.create!(name: 'Discount 3', percent_discounted: 0.30, quantity_threshold: 20)
+    @bulk_4 = @merchant_1.bulk_discounts.create!(name: 'Discount 4', percent_discounted: 0.35, quantity_threshold: 25)
+
     @customer_1 = Customer.create!(first_name: 'Not', last_name: 'Roald')
     @customer_2 = Customer.create!(first_name: 'Big', last_name: 'Rick')
+
     @invoice_1 = @customer_1.invoices.create!(status: 1)
     @invoice_2 = @customer_2.invoices.create!(status: 1)
+
     @item_1 = @merchant_1.items.create!(name: 'Cactus Juice', description: 'Its the quechiest', unit_price: 100)
     @item_2 = @merchant_1.items.create!(name: 'Other Item', description: 'Not so quenchy', unit_price: 234)
     @item_3 = @merchant_1.items.create!(name: 'Not Listed', description: 'Undefined', unit_price: 0)
     @item_4 = @merchant_2.items.create!(name: 'Not Listed', description: 'Undefined', unit_price: 0)
+
     @invoice_items_1 = InvoiceItem.create!(item_id: @item_1.id, invoice_id: @invoice_1.id, quantity: 10, unit_price: 1000, status: 0)
     @invoice_items_2 = InvoiceItem.create!(item_id: @item_2.id, invoice_id: @invoice_1.id, quantity: 10, unit_price: 2340, status: 1)
-    @invoice_items_2 = InvoiceItem.create!(item_id: @item_4.id, invoice_id: @invoice_2.id, quantity: 10, unit_price: 2340, status: 1)
+    @invoice_items_3 = InvoiceItem.create!(item_id: @item_4.id, invoice_id: @invoice_2.id, quantity: 10, unit_price: 2340, status: 1)
 
     visit "/merchants/#{@merchant_1.id}/invoices/#{@invoice_1.id}"
   end
@@ -64,5 +72,9 @@ RSpec.describe 'Merchant Invoice Show Page' do
 
   it 'shows total revenue' do
     expect(page).to have_content(3340)
+  end
+
+  it 'shows discounted price' do
+    expect(page).to have_content(2839.0)
   end
 end
