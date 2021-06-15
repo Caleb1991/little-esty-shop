@@ -78,12 +78,6 @@ RSpec.describe 'Merchant Invoice Show Page' do
     expect(page).to have_content(2839.0)
   end
 
-#   Merchant Invoice Show Page: Link to applied discounts
-#
-# As a merchant
-# When I visit my merchant invoice show page
-# Next to each invoice item I see a link to the show page for the bulk discount that was applied (if any)
-
   it 'has a link to any discount applied next to the item' do
     expect(page).to have_link('Discount 1')
   end

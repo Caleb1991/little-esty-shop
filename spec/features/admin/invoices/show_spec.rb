@@ -78,5 +78,14 @@ RSpec.describe 'Admin Invoice Show' do
       @invoice_1.reload
       expect(@invoice_1.status).to eq('completed')
     end
+
+#     Admin Invoice Show Page: Total Revenue and Discounted Revenue
+#
+# As an admin
+# When I visit an admin invoice show page
+# Then I see the total revenue from this invoice (not including discounts)
+# And I see the total discounted revenue from this invoice which includes bulk discounts in the calculation
+
+    it ''
   end
 end

@@ -4,7 +4,7 @@ class Merchant::InvoicesController < ApplicationController
     @merchant = Merchant.find(params[:merchant_id])
     @invoice = Invoice.find(params[:invoice_id])
     @customer = Customer.where('id = ?', @invoice.customer_id).first
-    @invoice_items = InvoiceItem.where('invoice_id = ?', @invoice.id)
+    @invoice_items = @merchant.invoice_items.where('invoice_id = ?', @invoice.id)
     @total_revenue = @invoice_items.sum(:unit_price)
     @discounted_revenue = 0
 
