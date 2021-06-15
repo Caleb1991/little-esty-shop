@@ -18,6 +18,9 @@ RSpec.describe Merchant, type: :model do
     @merchant_2 = Merchant.create!(name: "Mark's Money Makin' Markers")
     @merchant_3 = Merchant.create!(name: "Caleb's California Catapults")
 
+    @bulk_1 = @merchant_1.bulk_discounts.create!(name: 'Discount 1', quantity_threshold: 15, percent_discounted: 0.2)
+    @bulk_2 = @merchant_1.bulk_discounts.create!(name: 'Discount 1', quantity_threshold: 20, percent_discounted: 0.1)
+
     @item_1 = @merchant_1.items.create!(name: "Twinkies", description: "Yummy", unit_price: 400)
     @item_2 = @merchant_1.items.create!(name: "Applesauce", description: "Yummy", unit_price: 400)
     @item_3 = @merchant_1.items.create!(name: "Milk", description: "Yummy", unit_price: 400)
@@ -40,7 +43,7 @@ RSpec.describe Merchant, type: :model do
     @invoice_6 = Invoice.create!(customer_id: @customer_6.id, status: 1)
 
 
-    InvoiceItem.create!(item_id: @item_1.id, invoice_id: @invoice_1.id, quantity: 1, unit_price: 1500, status: 0)
+    @invoice_item_1 = InvoiceItem.create!(item_id: @item_1.id, invoice_id: @invoice_1.id, quantity: 21, unit_price: 1500, status: 0)
     InvoiceItem.create!(item_id: @item_2.id, invoice_id: @invoice_2.id, quantity: 4, unit_price: 1500, status: 0)
     InvoiceItem.create!(item_id: @item_3.id, invoice_id: @invoice_3.id, quantity: 3, unit_price: 1500, status: 0)
     InvoiceItem.create!(item_id: @item_4.id, invoice_id: @invoice_4.id, quantity: 2, unit_price: 1500, status: 0)
@@ -114,6 +117,19 @@ RSpec.describe Merchant, type: :model do
       Transaction.create!(invoice_id: @invoice_11.id, result: 0, credit_card_number: '12345', credit_card_expiration_date: '12345')
 
       expect(@merchant_2.ready_to_ship.length).to eq(7)
+    end
+
+    it 'returns true if discounts are greater than zero' do
+      expect(@merchant_1.discounts_greater_than_zero?).to eq(true)
+      expect(@merchant_2.discounts_greater_than_zero?).to eq(false)
+    end
+
+    it 'shows the minimum quantity threshold' do
+      expect(@merchant_1.minimum_discount_quantity).to eq(15)
+    end
+
+    it 'shows the highest discount percentage the quantity has achieved given an invoice item' do
+      expect(@merchant_1.highest_discount_percentage(@invoice_item_1)).to eq(0.2)
     end
   end
 end
