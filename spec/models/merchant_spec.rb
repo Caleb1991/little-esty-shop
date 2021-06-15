@@ -133,5 +133,9 @@ RSpec.describe Merchant, type: :model do
     it 'shows the highest discount percentage the quantity has achieved given an invoice item' do
       expect(@merchant_1.highest_discount_percentage(@invoice_item_1)).to eq(0.2)
     end
+
+    it 'calculates discounted revenue' do
+      expect(@merchant_1.calculate_discounted_revenue(@merchant_1.invoice_items)).to eq(52200.0)
+    end
   end
 end

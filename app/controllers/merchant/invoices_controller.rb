@@ -20,13 +20,7 @@ class Merchant::InvoicesController < ApplicationController
     end
 
     if @merchant.discounts_greater_than_zero?
-      @invoice_items.each do |item|
-        if item.quantity >= @merchant.minimum_discount_quantity
-          @discounted_revenue += ((item.quantity * item.unit_price) * (1 - @merchant.highest_discount_percentage(item)))
-        elsif
-          @discounted_revenue += (item.quantity * item.unit_price)
-        end
-      end
+      @discounted_revenue += @merchant.calculate_discounted_revenue(@invoice_items)
     end
   end
 
