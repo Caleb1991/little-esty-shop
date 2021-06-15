@@ -6,6 +6,7 @@ class InvoiceItem < ApplicationRecord
   belongs_to :item
 
   has_many :transactions, through: :invoice
+  has_many :bulk_discounts, through: :merchants
 
   enum status: ['pending', 'packaged', 'shipped']
 
@@ -22,12 +23,14 @@ class InvoiceItem < ApplicationRecord
       unit_price.to_f / 100
     end
   end
+
+  def discount_applied?(merchant)
+    #
+    self.quantity >= merchant.bulk_discounts.minimum(:quantity_threshold)
+  end
+
+  def bulk_discount(merchant)
+    #
+    merchant.bulk_discounts.where('quantity_threshold <= ?', self.quantity).order(percent_discounted: :desc).first
+  end
 end
-
-# InvoiceItem.joins(:item).select('items.*, invoice_items.*').where('invoice_id = ?', params)
-
-# Query_1
-# SELECT items.*, invoice_items.* FROM "invoice_items" INNER JOIN "items" ON "items"."id" = "invoice_items"."item_id" WHERE (invoice_id = 9)
-#
-# Query_2
-# SELECT invoice_items.*, items.* FROM "invoice_items" INNER JOIN "items" ON "items"."id" = "invoice_items"."item_id" WHERE (invoice_id = 9)
