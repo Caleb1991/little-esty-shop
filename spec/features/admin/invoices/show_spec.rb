@@ -11,13 +11,19 @@ RSpec.describe 'Admin Invoice Show' do
       @invoice_5 = @customer_1.invoices.create!(status: 0)
 
       @merchant_1 = Merchant.create!(name: 'Roald')
+      @merchant_2 = Merchant.create!(name: 'Marshall')
+
+      @bulk_1 = @merchant_1.bulk_discounts.create!(name: 'Discount 1', quantity_threshold: 200, percent_discounted: 0.1)
+
       @item_1 = @merchant_1.items.create!(name: 'Doritos', description: 'Delicious', unit_price: 39434)
       @item_2 = @merchant_1.items.create!(name: 'Lays', description: 'Deliciousio', unit_price: 8356)
       @item_3 = @merchant_1.items.create!(name: 'Cadlee', description: 'Perfecto', unit_price: 9064)
+      @item_4 = @merchant_2.items.create!(name: 'Chocodile', description: 'Perfecto', unit_price: 9064)
 
       InvoiceItem.create!(invoice: @invoice_1, item: @item_1, status: 1, quantity: 200, unit_price: 39434)
       InvoiceItem.create!(invoice: @invoice_1, item: @item_2, status: 1, quantity: 295, unit_price: 8356)
       InvoiceItem.create!(invoice: @invoice_1, item: @item_3, status: 2, quantity: 382, unit_price: 9064)
+      InvoiceItem.create!(invoice: @invoice_1, item: @item_4, status: 2, quantity: 382, unit_price: 9064)
       InvoiceItem.create!(invoice: @invoice_4, item: @item_1, status: 2, quantity: 130, unit_price: 39434)
       InvoiceItem.create!(invoice: @invoice_5, item: @item_1, status: 1, quantity: 97, unit_price: 39434)
     end
@@ -79,13 +85,10 @@ RSpec.describe 'Admin Invoice Show' do
       expect(@invoice_1.status).to eq('completed')
     end
 
-#     Admin Invoice Show Page: Total Revenue and Discounted Revenue
-#
-# As an admin
-# When I visit an admin invoice show page
-# Then I see the total revenue from this invoice (not including discounts)
-# And I see the total discounted revenue from this invoice which includes bulk discounts in the calculation
+    it 'shows discounted revenue' do
+      visit "/admin/invoices/#{@invoice_1.id}"
 
-    it ''
+      expect(page).to have_content(158952.892)
+    end
   end
 end
