@@ -15,7 +15,7 @@
 <h2 class="title_wrapper">Invoice #<%= @invoice.id %></h2>
 
   <body>
-  
+
     <section>
       <div>
         <div style='display:flex;' name="Current Status">Status:
@@ -27,6 +27,9 @@
         <!-- <div>Current Status: <%= @invoice.status %></div> -->
         <h4>Created on: <%= @invoice.created_at.strftime('%A, %B %d, %Y') %></h4>
         <h4>Expected Invoice Revenue: $<%= number_with_precision(@invoice_revenue, precision: 2, delimiter: ',') %></h4>
+        <% if @discounted_revenue > 0 %>
+          <p>Expected Discounted Revenue: <%= @discounted_revenue %></p>
+        <% end %>
       </div>
       <div>
         <h4>Customer Info: <%= @customer.first_name %> <%= @customer.last_name %></h4>
