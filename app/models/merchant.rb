@@ -73,4 +73,17 @@ class Merchant < ApplicationRecord
   def highest_discount_percentage(item)
     bulk_discounts.where('quantity_threshold <= ?', item.quantity).order(percent_discounted: :desc).first.percent_discounted
   end
+
+  def calculate_discounted_revenue(invoice_items)
+    discounted_revenue = 0
+
+    invoice_items.each do |item|
+      if item.quantity >= self.minimum_discount_quantity
+        discounted_revenue += ((item.quantity * item.unit_price) * (1 - self.highest_discount_percentage(item)))
+      elsif
+        discounted_revenue += (item.quantity * item.unit_price)
+      end
+    end
+    discounted_revenue
+  end
 end
