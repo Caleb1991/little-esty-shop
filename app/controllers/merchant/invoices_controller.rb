@@ -6,6 +6,7 @@ class Merchant::InvoicesController < ApplicationController
     @customer = Customer.where('id = ?', @invoice.customer_id).first
     @invoice_items = InvoiceItem.where('invoice_id = ?', @invoice.id)
     @total_revenue = @invoice_items.sum(:unit_price)
+    @discounted_revenue = 0
 
     if params[:status] != nil && params[:status] == 1
       InvoiceItem.where('merchant_id = ? AND invoice_id = ?', params[:merchant_id], params[:invoice_id]).first.update(status: 'Pending')
@@ -17,8 +18,6 @@ class Merchant::InvoicesController < ApplicationController
       InvoiceItem.where('merchant_id = ? AND invoice_id = ?', params[:merchant_id], params[:invoice_id]).first.update(status: 'Shipped')
       redirect_to "/merchants/#{@merchant.id}/invoices/#{@invoice.id}"
     end
-
-    @discounted_revenue = 0
 
     if @merchant.discounts_greater_than_zero?
       @invoice_items.each do |item|

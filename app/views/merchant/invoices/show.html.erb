@@ -22,6 +22,11 @@
   <p>Name: <%= Item.where('id = ?', item.item_id).first.name %></p>
   <p>Quantity Ordered: <%= item.quantity %></p>
   <p>Price Sold For: $<%= number_with_precision((item.unit_price.to_f / 100), precision: 2, delimiter: ',') %></p>
+  <% if @merchant.discounts_greater_than_zero? %>
+    <% if item.discount_applied?(@merchant) %>
+      <p>Discount Applied: <%= link_to "#{item.bulk_discount(@merchant).name}", "/bulk_discounts/#{item.bulk_discount(@merchant).id}" %></p>
+    <% end %>
+  <% end %>
   <%= form_with url: "/merchants/#{@merchant.id}/invoices/#{@invoice.id}?item_id=#{item.id}", method: :patch, local: true do |f| %>
     <p>Status: <%= f.select :status, ['pending','packaged', 'shipped'], selected: item.status  %></p>
     <%= f.submit 'Update Status' %>

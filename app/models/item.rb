@@ -7,4 +7,5 @@ class Item < ApplicationRecord
   has_many :transactions, through: :invoices
 
   enum status: ["enable", "disable"]
+
 end
