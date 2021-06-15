@@ -23,6 +23,11 @@ RSpec.describe Invoice, type: :model do
     @invoice_4 = Invoice.create!(status: 0, customer_id: @customer_1.id)
 
     @merchant_1 = Merchant.create!(name: 'Roald', status: 'enable')
+
+    @bulk_1 = @merchant_1.bulk_discounts.create!(name: 'Discount 1', quantity_threshold: 10, percent_discounted: 0.3)
+    @bulk_2 = @merchant_1.bulk_discounts.create!(name: 'Discount 2', quantity_threshold: 15, percent_discounted: 0.2)
+
+
     @merchant_2 = Merchant.create!(name: 'Marshall', status: 'disable')
     @merchant_3 = Merchant.create!(name: 'Big Rick', status: 'enable')
     @merchant_4 = Merchant.create!(name: 'Debby', status: 'disable')
@@ -47,6 +52,8 @@ RSpec.describe Invoice, type: :model do
     @invoice_item_4 = InvoiceItem.create!(item_id: @item_4.id , invoice_id: @invoice_4.id, quantity: 400, unit_price: 63, status: 2)
     @invoice_item_5 = InvoiceItem.create!(item_id: @item_5.id , invoice_id: @invoice_5.id, quantity: 500, unit_price: 48, status: 1)
     @invoice_item_5 = InvoiceItem.create!(item_id: @item_3.id , invoice_id: @invoice_1.id, quantity: 50, unit_price: 73, status: 1)
+    @invoice_item_6 = InvoiceItem.create!(item_id: @item_1.id , invoice_id: @invoice_1.id, quantity: 50, unit_price: 73, status: 1)
+    @invoice_item_7 = InvoiceItem.create!(item_id: @item_1.id , invoice_id: @invoice_1.id, quantity: 5, unit_price: 73, status: 1)
   end
 
   describe '.ordered_invoices_not_shipped' do
@@ -60,13 +67,26 @@ RSpec.describe Invoice, type: :model do
 
   describe '.expected_invoice_revenue' do
     it 'calculates invoice revenue' do
-      expect(Invoice.expected_invoice_revenue(@invoice_1.id)[0].invoice_revenue.to_f / 100).to eq(136.50)
+      expect(Invoice.expected_invoice_revenue(@invoice_1.id)[0].invoice_revenue.to_f / 100).to eq(176.65)
     end
   end
 
   describe '.top_five_best_day' do
     it 'calculates a merchants top five best day' do
       expect(Invoice.top_five_best_day(@merchant_1.id).strftime('%m/%d/%Y')).to eq(Date.today.strftime('%m/%d/%Y'))
+    end
+  end
+
+  describe '#discount_applied' do
+    it 'returns true if an item quantity meets the minimum requirements for a discount' do
+      expect(@invoice_item_6.discount_applied?(@merchant_1)).to eq(true)
+      expect(@invoice_item_7.discount_applied?(@merchant_1)).to eq(false)
+    end
+  end
+
+  describe '#bulk_discount' do
+    it 'gives the highest possible percentage for the given quantity' do
+      expect(@invoice_item_6.bulk_discount(@merchant_1)).to eq(@bulk_1)
     end
   end
 end

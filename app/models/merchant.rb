@@ -64,16 +64,13 @@ class Merchant < ApplicationRecord
 
   def discounts_greater_than_zero?
     bulk_discounts.count > 0
-    #
   end
 
   def minimum_discount_quantity
     bulk_discounts.minimum(:quantity_threshold)
-    #
   end
 
   def highest_discount_percentage(item)
     bulk_discounts.where('quantity_threshold <= ?', item.quantity).order(percent_discounted: :desc).first.percent_discounted
-    # 
   end
 end

@@ -65,11 +65,13 @@ RSpec.describe Merchant, type: :model do
 
   describe "validations" do
     it {should validate_presence_of :name}
-    # it {should validate_presence_of :status}
-    #WIP - unsure of where to input
   end
   describe "relationships" do
     it {should have_many  :items}
+    it {should have_many  :bulk_discounts}
+    it {should have_many(:invoice_items).through(:items)}
+    it {should have_many(:invoices).through(:invoice_items)}
+    it {should have_many(:transactions).through(:invoices)}
   end
 
   describe 'methods' do
