@@ -1,5 +1,8 @@
 class Merchant::BulkDiscountsController < ApplicationController
   def index
+    nager_user = NagerUser.new('US')
+    @next_holidays = nager_user.next_three_holidays
+
     @merchant = Merchant.find(params[:merchant_id])
 
     @bulk_discounts = @merchant.bulk_discounts
