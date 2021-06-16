@@ -10,10 +10,10 @@ Transaction.destroy_all
 @merchant_2 = Merchant.create!(name: "Mark's Money Makin' Markers")
 @merchant_3 = Merchant.create!(name: "Caleb's California Catapults")
 
-@bulk_1 = @merchant_1.bulk_discounts.create!(name: 'Discount 1', percent_discounted: 0.15, quantity_threshold: 10)
+@bulk_1 = @merchant_1.bulk_discounts.create!(name: 'Discount 1', percent_discounted: 0.20, quantity_threshold: 10)
 @bulk_2 = @merchant_1.bulk_discounts.create!(name: 'Discount 2', percent_discounted: 0.35, quantity_threshold: 30)
 @bulk_3 = @merchant_1.bulk_discounts.create!(name: 'Discount 3', percent_discounted: 0.30, quantity_threshold: 20)
-@bulk_4 = @merchant_1.bulk_discounts.create!(name: 'Discount 4', percent_discounted: 0.20, quantity_threshold: 15)
+@bulk_4 = @merchant_1.bulk_discounts.create!(name: 'Discount 4', percent_discounted: 0.15, quantity_threshold: 15)
 
 @item_1 = @merchant_1.items.create!(name: "Twinkies", description: "Yummy", unit_price: 400)
 @item_2 = @merchant_1.items.create!(name: "Applesauce", description: "Yummy", unit_price: 400)
@@ -46,7 +46,7 @@ Transaction.destroy_all
 @invoice_10 = Invoice.create!(customer_id: @customer_5.id, status: 0)
 @invoice_11 = Invoice.create!(customer_id: @customer_6.id, status: 0)
 
-InvoiceItem.create!(item_id: @item_1.id, invoice_id: @invoice_1.id, quantity: 10, unit_price: 1500, status: 1)
+InvoiceItem.create!(item_id: @item_1.id, invoice_id: @invoice_1.id, quantity: 16, unit_price: 1500, status: 1)
 InvoiceItem.create!(item_id: @item_2.id, invoice_id: @invoice_1.id, quantity: 9, unit_price: 1500, status: 1)
 InvoiceItem.create!(item_id: @item_2.id, invoice_id: @invoice_2.id, quantity: 15, unit_price: 1500, status: 0)
 InvoiceItem.create!(item_id: @item_3.id, invoice_id: @invoice_3.id, quantity: 20, unit_price: 1500, status: 0)
