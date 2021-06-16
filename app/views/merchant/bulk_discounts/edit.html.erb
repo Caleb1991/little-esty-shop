@@ -4,6 +4,6 @@
 <%= f.label :quantity_threshold, 'Quantity Threshold' %>
 <%= f.number_field :quantity_threshold, value: @discount.quantity_threshold %>
 <%= f.label :percent_discounted %>
-<%= f.number_field :percent_discounted, value: @discount.percent_discounted %>
+<%= f.number_field :percent_discounted, step: :any, value: @discount.percent_discounted %>
 <%= f.submit 'Update Discount' %>
 <% end %>
